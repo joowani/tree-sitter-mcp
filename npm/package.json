@@ -1,13 +1,13 @@
 {
-  "name": "tree-sitter-mcp",
+  "name": "tree-sitter-mcp-server",
   "version": "0.0.0",
   "description": "MCP server that parses code into Tree-sitter ASTs",
-  "mcpName": "io.github.joowani/tree-sitter-mcp",
+  "mcpName": "io.github.joowani/tree-sitter-mcp-server",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/joowani/tree-sitter-mcp.git"
+    "url": "git+https://github.com/joowani/tree-sitter-mcp-server.git"
   },
-  "homepage": "https://github.com/joowani/tree-sitter-mcp",
+  "homepage": "https://github.com/joowani/tree-sitter-mcp-server",
   "license": "MIT",
   "author": {
     "name": "Joohwan Oh",
@@ -22,7 +22,7 @@
     "llm"
   ],
   "bin": {
-    "tree-sitter-mcp": "bin/tree-sitter-mcp.js"
+    "tree-sitter-mcp-server": "bin/tree-sitter-mcp-server.js"
   },
   "files": [
     "bin"
@@ -31,11 +31,11 @@
     "node": ">=18"
   },
   "optionalDependencies": {
-    "@joowani/tree-sitter-mcp-darwin-arm64": "0.0.0",
-    "@joowani/tree-sitter-mcp-darwin-x64": "0.0.0",
-    "@joowani/tree-sitter-mcp-linux-arm64": "0.0.0",
-    "@joowani/tree-sitter-mcp-linux-x64": "0.0.0",
-    "@joowani/tree-sitter-mcp-win32-arm64": "0.0.0",
-    "@joowani/tree-sitter-mcp-win32-x64": "0.0.0"
+    "@joowani/tree-sitter-mcp-server-darwin-arm64": "0.0.0",
+    "@joowani/tree-sitter-mcp-server-darwin-x64": "0.0.0",
+    "@joowani/tree-sitter-mcp-server-linux-arm64": "0.0.0",
+    "@joowani/tree-sitter-mcp-server-linux-x64": "0.0.0",
+    "@joowani/tree-sitter-mcp-server-win32-arm64": "0.0.0",
+    "@joowani/tree-sitter-mcp-server-win32-x64": "0.0.0"
   }
 }

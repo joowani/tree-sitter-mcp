@@ -1,5 +1,5 @@
 [package]
-name = "tree-sitter-mcp"
+name = "tree-sitter-mcp-server"
 description = "MCP server that parses code into Tree-sitter ASTs"
 version = "0.1.0"
 authors = ["Joohwan Oh <joohwan.oh@outlook.com>"]
@@ -7,8 +7,8 @@ license = "MIT"
 readme = "README.md"
 keywords = ["tree-sitter", "mcp", "ast", "parser", "llm"]
 categories = ["development-tools", "parser-implementations", "command-line-utilities"]
-homepage = "https://github.com/joowani/tree-sitter-mcp"
-repository = "https://github.com/joowani/tree-sitter-mcp"
+homepage = "https://github.com/joowani/tree-sitter-mcp-server"
+repository = "https://github.com/joowani/tree-sitter-mcp-server"
 edition = "2024"
 rust-version = "1.90"
 

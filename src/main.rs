@@ -8,7 +8,7 @@ use rmcp::schemars::JsonSchema;
 use rmcp::transport::stdio;
 use rmcp::{ErrorData, ServerHandler, ServiceExt, tool, tool_handler, tool_router};
 use serde::Deserialize;
-use tree_sitter_mcp::{SUPPORTED_LANGUAGES, format_ast, parse};
+use tree_sitter_mcp_server::{SUPPORTED_LANGUAGES, format_ast, parse};
 
 #[derive(Debug, Deserialize, JsonSchema)]
 #[schemars(crate = "rmcp::schemars")]
@@ -74,7 +74,7 @@ impl ServerHandler for TreeSitterServer {
         ServerConfig::new(ServerCapabilities::builder().enable_tools().build())
             .with_server_info(
                 Implementation::new(env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"))
-                    .with_title("Tree-sitter MCP")
+                    .with_title("Tree-sitter MCP Server")
                     .with_description(env!("CARGO_PKG_DESCRIPTION"))
                     .with_website_url(env!("CARGO_PKG_REPOSITORY")),
             )

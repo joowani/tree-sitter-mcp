@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Runs the tree-sitter-mcp binary from the platform package that npm installed as an optional dependency.
+// Runs the tree-sitter-mcp-server binary from the platform package that npm installed as an optional dependency.
 
 "use strict";
 
@@ -8,17 +8,17 @@ const path = require("node:path");
 const { optionalDependencies } = require("../package.json");
 
 const platform = `${process.platform}-${process.arch}`;
-const packageName = `@joowani/tree-sitter-mcp-${platform}`;
+const packageName = `@joowani/tree-sitter-mcp-server-${platform}`;
 if (!(packageName in optionalDependencies)) {
-  fail(`no prebuilt binary for ${platform}; install it with \`cargo install --locked tree-sitter-mcp\` instead`);
+  fail(`no prebuilt binary for ${platform}; install it with \`cargo install --locked tree-sitter-mcp-server\` instead`);
 }
 
 let binary;
 try {
   const packageDir = path.dirname(require.resolve(`${packageName}/package.json`));
-  binary = path.join(packageDir, "bin", process.platform === "win32" ? "tree-sitter-mcp.exe" : "tree-sitter-mcp");
+  binary = path.join(packageDir, "bin", process.platform === "win32" ? "tree-sitter-mcp-server.exe" : "tree-sitter-mcp-server");
 } catch {
-  fail(`${packageName} is not installed; reinstall tree-sitter-mcp without --no-optional or --omit=optional`);
+  fail(`${packageName} is not installed; reinstall tree-sitter-mcp-server without --no-optional or --omit=optional`);
 }
 
 // The server speaks MCP over stdio, so the child shares this process's stdin, stdout, and stderr.
@@ -42,6 +42,6 @@ child.on("exit", (code, signal) => {
 
 function fail(message) {
   // Write to stderr only, since stdout carries the MCP session.
-  console.error(`tree-sitter-mcp: ${message}`);
+  console.error(`tree-sitter-mcp-server: ${message}`);
   process.exit(1);
 }

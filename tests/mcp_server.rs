@@ -1,4 +1,4 @@
-//! Drives the `tree-sitter-mcp` binary with the official MCP client over both protocol lifecycles.
+//! Drives the `tree-sitter-mcp-server` binary with the official MCP client over both protocol lifecycles.
 
 use rmcp::RoleClient;
 use rmcp::model::{CallToolRequestParams, CallToolResult, ProtocolVersion};
@@ -6,10 +6,10 @@ use rmcp::service::{ClientLifecycleMode, ClientServiceExt, RunningService};
 use rmcp::transport::TokioChildProcess;
 use serde_json::json;
 use tokio::process::Command;
-use tree_sitter_mcp::{MAX_CODE_BYTES, SUPPORTED_LANGUAGES};
+use tree_sitter_mcp_server::{MAX_CODE_BYTES, SUPPORTED_LANGUAGES};
 
 async fn connect(lifecycle: ClientLifecycleMode) -> RunningService<RoleClient, ()> {
-    let server = Command::new(env!("CARGO_BIN_EXE_tree-sitter-mcp"));
+    let server = Command::new(env!("CARGO_BIN_EXE_tree-sitter-mcp-server"));
     let transport = TokioChildProcess::new(server).expect("server should start");
     ().serve_with_lifecycle(transport, lifecycle)
         .await
@@ -77,7 +77,7 @@ async fn test_legacy_initialize_lifecycle_serves_asts() {
         ProtocolVersion::LATEST_WITH_INITIALIZE
     );
     let implementation = server.server_info.as_ref().expect("server implementation");
-    assert_eq!(implementation.name, "tree-sitter-mcp");
+    assert_eq!(implementation.name, "tree-sitter-mcp-server");
     assert_eq!(implementation.version, env!("CARGO_PKG_VERSION"));
 
     assert_serves_asts(&client).await;
@@ -125,7 +125,7 @@ async fn test_stateless_2026_07_28_lifecycle_serves_asts() {
     let server = client.peer_info().expect("server info after discovery");
     assert_eq!(server.protocol_version, ProtocolVersion::V_2026_07_28);
     let implementation = server.server_info.as_ref().expect("server implementation");
-    assert_eq!(implementation.name, "tree-sitter-mcp");
+    assert_eq!(implementation.name, "tree-sitter-mcp-server");
 
     let tools = client.list_all_tools().await.expect("tools should list");
     assert_eq!(tools.len(), 1);

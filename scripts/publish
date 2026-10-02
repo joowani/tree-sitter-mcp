@@ -29,24 +29,24 @@ if [[ $check_only == true ]]; then
     exit 0
 fi
 
-user_agent="tree-sitter-mcp release workflow (https://github.com/joowani/tree-sitter-mcp)"
+user_agent="tree-sitter-mcp-server release workflow (https://github.com/joowani/tree-sitter-mcp-server)"
 
 # Read the status code, since `curl --fail` cannot distinguish a network failure from a missing crate version.
 status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' \
-    --user-agent "$user_agent" "https://crates.io/api/v1/crates/tree-sitter-mcp/$version")" || {
-    echo "crates.io could not be reached while checking tree-sitter-mcp $version" >&2
+    --user-agent "$user_agent" "https://crates.io/api/v1/crates/tree-sitter-mcp-server/$version")" || {
+    echo "crates.io could not be reached while checking tree-sitter-mcp-server $version" >&2
     exit 1
 }
 
 case "$status" in
     200)
-        echo "tree-sitter-mcp $version is already published; nothing to do"
+        echo "tree-sitter-mcp-server $version is already published; nothing to do"
         ;;
     404)
         cargo publish --locked
         ;;
     *)
-        echo "crates.io answered $status while checking tree-sitter-mcp $version" >&2
+        echo "crates.io answered $status while checking tree-sitter-mcp-server $version" >&2
         exit 1
         ;;
 esac

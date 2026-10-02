@@ -1,4 +1,4 @@
-# Tree-sitter MCP
+# Tree-sitter MCP Server
 
 An [MCP](https://modelcontextprotocol.io) server that shows coding agents the
 [Tree-sitter](https://tree-sitter.github.io) syntax tree of a code snippet, so they can check node kinds, field names,
@@ -9,13 +9,13 @@ and positions before writing Tree-sitter queries or code that walks a syntax tre
 Claude Code:
 
 ```shell
-claude mcp add tree-sitter -- npx -y tree-sitter-mcp
+claude mcp add tree-sitter -- npx -y tree-sitter-mcp-server
 ```
 
 Codex:
 
 ```shell
-codex mcp add tree-sitter -- npx -y tree-sitter-mcp
+codex mcp add tree-sitter -- npx -y tree-sitter-mcp-server
 ```
 
 Other clients:
@@ -25,19 +25,20 @@ Other clients:
   "mcpServers": {
     "tree-sitter": {
       "command": "npx",
-      "args": ["-y", "tree-sitter-mcp"]
+      "args": ["-y", "tree-sitter-mcp-server"]
     }
   }
 }
 ```
 
-`npx` needs Node.js. Without it, install the binary with `cargo install --locked tree-sitter-mcp` or download it from
-the [releases](https://github.com/joowani/tree-sitter-mcp/releases), and use `tree-sitter-mcp` as the command.
+`npx` needs Node.js. Without it, install the binary with `cargo install --locked tree-sitter-mcp-server` or download
+it from the [releases](https://github.com/joowani/tree-sitter-mcp-server/releases), and use `tree-sitter-mcp-server` as
+the command.
 
 Clients that browse the [MCP Registry](https://registry.modelcontextprotocol.io), such as VS Code, can also install it
 from there.
 
-mcp-name: io.github.joowani/tree-sitter-mcp
+mcp-name: io.github.joowani/tree-sitter-mcp-server
 
 ## Supported Languages
 

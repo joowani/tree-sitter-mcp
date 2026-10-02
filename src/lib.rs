@@ -289,7 +289,7 @@ mod tests {
         ),
         (
             "json",
-            "{\"name\": \"tree-sitter-mcp\", \"version\": 1, \"tags\": [\"mcp\", \"ast\"]}\n",
+            "{\"name\": \"tree-sitter-mcp-server\", \"version\": 1, \"tags\": [\"mcp\", \"ast\"]}\n",
         ),
         (
             "jsx",
@@ -341,7 +341,7 @@ mod tests {
         ),
         (
             "toml",
-            "[package]\nname = \"tree-sitter-mcp\"\nversion = \"0.1.0\"\n",
+            "[package]\nname = \"tree-sitter-mcp-server\"\nversion = \"0.1.0\"\n",
         ),
         (
             "tsx",
@@ -351,7 +351,10 @@ mod tests {
             "typescript",
             "interface User {\n  name: string;\n}\n\nexport function greet(user: User): string {\n  return `Hello, ${user.name}`;\n}\n",
         ),
-        ("yaml", "name: tree-sitter-mcp\ntags:\n  - mcp\n  - ast\n"),
+        (
+            "yaml",
+            "name: tree-sitter-mcp-server\ntags:\n  - mcp\n  - ast\n",
+        ),
     ];
 
     #[test]

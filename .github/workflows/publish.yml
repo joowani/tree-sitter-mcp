@@ -59,7 +59,7 @@ jobs:
           exists() {
               local status
               status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' \
-                  --user-agent "tree-sitter-mcp release workflow (https://github.com/$GH_REPO)" "$1")"
+                  --user-agent "tree-sitter-mcp-server release workflow (https://github.com/$GH_REPO)" "$1")"
               case "$status" in
                   200) return 0 ;;
                   404) return 1 ;;
@@ -68,7 +68,7 @@ jobs:
           }
 
           published=()
-          if exists "https://crates.io/api/v1/crates/tree-sitter-mcp/$VERSION"; then
+          if exists "https://crates.io/api/v1/crates/tree-sitter-mcp-server/$VERSION"; then
               published+=("crate")
           fi
           for name in $(jq -r '.name, (.optionalDependencies | keys[])' npm/package.json); do
@@ -193,36 +193,36 @@ jobs:
       # The runner is native, so the binary it built can answer an MCP initialize request.
       - name: Test MCP server binary
         run: |
-          response="$(printf '%s\n' "$INITIALIZE_REQUEST" | "target/$TARGET/release/tree-sitter-mcp$EXE")"
+          response="$(printf '%s\n' "$INITIALIZE_REQUEST" | "target/$TARGET/release/tree-sitter-mcp-server$EXE")"
           echo "$response"
-          grep -q '"name":"tree-sitter-mcp"' <<<"$response"
+          grep -q '"name":"tree-sitter-mcp-server"' <<<"$response"
 
       - name: Package binary
         run: |
-          dir="tree-sitter-mcp-$TARGET"
+          dir="tree-sitter-mcp-server-$TARGET"
           mkdir "$dir"
-          cp "target/$TARGET/release/tree-sitter-mcp$EXE" LICENSE README.md "$dir"
+          cp "target/$TARGET/release/tree-sitter-mcp-server$EXE" LICENSE README.md "$dir"
           if [[ -n "$EXE" ]]; then
               7z a -tzip "$dir.zip" "$dir"
           else
               tar -czf "$dir.tar.gz" "$dir"
           fi
 
-      # npm installs this package only on its platform, as an optional dependency of the tree-sitter-mcp package.
+      # npm installs this package only on its platform, as an optional dependency of the tree-sitter-mcp-server package.
       - name: Package npm binary
         env:
           # Keeps macOS tar from adding AppleDouble files to the tarball.
           COPYFILE_DISABLE: 1
         run: |
           mkdir -p package/bin
-          cp "target/$TARGET/release/tree-sitter-mcp$EXE" package/bin/
+          cp "target/$TARGET/release/tree-sitter-mcp-server$EXE" package/bin/
           cp LICENSE package/
           cat > package/package.json <<EOF
           {
-            "name": "@joowani/tree-sitter-mcp-$NPM_PLATFORM",
+            "name": "@joowani/tree-sitter-mcp-server-$NPM_PLATFORM",
             "version": "$VERSION",
-            "description": "The $NPM_PLATFORM binary for tree-sitter-mcp",
-            "repository": { "type": "git", "url": "git+https://github.com/joowani/tree-sitter-mcp.git" },
+            "description": "The $NPM_PLATFORM binary for tree-sitter-mcp-server",
+            "repository": { "type": "git", "url": "git+https://github.com/joowani/tree-sitter-mcp-server.git" },
             "license": "MIT",
             "os": ["${NPM_PLATFORM%-*}"],
             "cpu": ["${NPM_PLATFORM#*-}"],
@@ -236,7 +236,7 @@ jobs:
         with:
           name: archive-${{ matrix.target }}
           path: |
-            tree-sitter-mcp-${{ matrix.target }}.*
+            tree-sitter-mcp-server-${{ matrix.target }}.*
             npm-${{ matrix.npm }}.tgz
           if-no-files-found: error
 
@@ -278,11 +278,12 @@ jobs:
       contents: read
       id-token: write
     steps:
+      # npm/ and server.json are release metadata, so they come from the workflow's commit, like the workflow itself.
+      # The binaries in the archives come from the commit being released.
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-          ref: ${{ needs.validate.outputs.commit }}
 
       - name: Install Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
@@ -298,22 +299,23 @@ jobs:
           merge-multiple: true
 
       # The committed package.json holds 0.0.0 for the package and its platform binaries.
-      - name: Pack tree-sitter-mcp package
+      - name: Pack tree-sitter-mcp-server package
         run: |
           jq --arg version "$VERSION" '.version = $version | .optionalDependencies[] = $version' npm/package.json \
               > package.json.new
           mv package.json.new npm/package.json
           cp README.md LICENSE npm/
-          npm pack ./npm --pack-destination artifacts
+          tarball="$(npm pack ./npm --pack-destination artifacts | tail -n 1)"
+          echo "COMMAND_TARBALL=artifacts/$tarball" >> "$GITHUB_ENV"
 
       - name: Test packages
         run: |
           cd "$RUNNER_TEMP"
           npm install --no-audit --no-fund "$GITHUB_WORKSPACE/artifacts/npm-linux-x64.tgz" \
-              "$GITHUB_WORKSPACE/artifacts/tree-sitter-mcp-$VERSION.tgz"
-          response="$(printf '%s\n' "$INITIALIZE_REQUEST" | npx --no-install tree-sitter-mcp)"
+              "$GITHUB_WORKSPACE/$COMMAND_TARBALL"
+          response="$(printf '%s\n' "$INITIALIZE_REQUEST" | npx --no-install tree-sitter-mcp-server)"
           echo "$response"
-          grep -q '"name":"tree-sitter-mcp"' <<<"$response"
+          grep -q '"name":"tree-sitter-mcp-server"' <<<"$response"
 
       # The platform packages go first, so the command package never points at a binary that is not published yet.
       # Versions that are already published are skipped, so the job can be rerun after a partial failure.
@@ -325,7 +327,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           # The ./ prefix keeps npm from reading `artifacts/<file>` as a GitHub repository.
-          for tarball in ./artifacts/npm-*.tgz "./artifacts/tree-sitter-mcp-$VERSION.tgz"; do
+          for tarball in ./artifacts/npm-*.tgz "./$COMMAND_TARBALL"; do
               name="$(tar -xOzf "$tarball" package/package.json | jq -r .name)"
               if npm view "$name@$VERSION" version >/dev/null 2>&1; then
                   echo "$name $VERSION is already published; skipping"
@@ -356,11 +358,11 @@ jobs:
           GH_REPO: ${{ github.repository }}
         run: |
           cd artifacts
-          sha256sum tree-sitter-mcp-* > SHA256SUMS
+          sha256sum tree-sitter-mcp-server-* > SHA256SUMS
           if ! is_draft="$(gh release view "v$VERSION" --json isDraft --jq .isDraft 2>/dev/null)"; then
-              gh release create "v$VERSION" --verify-tag --title "v$VERSION" --generate-notes tree-sitter-mcp-* SHA256SUMS
+              gh release create "v$VERSION" --verify-tag --title "v$VERSION" --generate-notes tree-sitter-mcp-server-* SHA256SUMS
           elif [[ "$is_draft" == true ]]; then
-              gh release upload "v$VERSION" --clobber tree-sitter-mcp-* SHA256SUMS
+              gh release upload "v$VERSION" --clobber tree-sitter-mcp-server-* SHA256SUMS
               gh release edit "v$VERSION" --draft=false
           else
               echo "release v$VERSION is already published; nothing to do"
@@ -369,17 +371,17 @@ jobs:
   # The registry checks that the crate and the npm package are already published.
   publish-mcp-registry:
     name: Publish to MCP Registry
-    needs: [validate, publish-crate, publish-npm]
+    needs: [publish-crate, publish-npm]
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
     steps:
+      # server.json is release metadata, so it comes from the workflow's commit, like the workflow itself.
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-          ref: ${{ needs.validate.outputs.commit }}
 
       - name: Install mcp-publisher
         env:
