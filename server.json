@@ -1,0 +1,33 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.joowani/tree-sitter-mcp",
+  "title": "Tree-sitter MCP",
+  "description": "Parse code into Tree-sitter ASTs to see node kinds, field names, and positions",
+  "repository": {
+    "url": "https://github.com/joowani/tree-sitter-mcp",
+    "source": "github"
+  },
+  "websiteUrl": "https://github.com/joowani/tree-sitter-mcp",
+  "version": "0.0.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "tree-sitter-mcp",
+      "version": "0.0.0",
+      "runtimeHint": "npx",
+      "transport": {
+        "type": "stdio"
+      }
+    },
+    {
+      "registryType": "cargo",
+      "registryBaseUrl": "https://crates.io",
+      "identifier": "tree-sitter-mcp",
+      "version": "0.0.0",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}

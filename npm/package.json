@@ -1,0 +1,41 @@
+{
+  "name": "tree-sitter-mcp",
+  "version": "0.0.0",
+  "description": "MCP server that parses code into Tree-sitter ASTs",
+  "mcpName": "io.github.joowani/tree-sitter-mcp",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joowani/tree-sitter-mcp.git"
+  },
+  "homepage": "https://github.com/joowani/tree-sitter-mcp",
+  "license": "MIT",
+  "author": {
+    "name": "Joohwan Oh",
+    "email": "joohwan.oh@outlook.com"
+  },
+  "keywords": [
+    "tree-sitter",
+    "mcp",
+    "mcp-server",
+    "ast",
+    "parser",
+    "llm"
+  ],
+  "bin": {
+    "tree-sitter-mcp": "bin/tree-sitter-mcp.js"
+  },
+  "files": [
+    "bin"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "optionalDependencies": {
+    "@joowani/tree-sitter-mcp-darwin-arm64": "0.0.0",
+    "@joowani/tree-sitter-mcp-darwin-x64": "0.0.0",
+    "@joowani/tree-sitter-mcp-linux-arm64": "0.0.0",
+    "@joowani/tree-sitter-mcp-linux-x64": "0.0.0",
+    "@joowani/tree-sitter-mcp-win32-arm64": "0.0.0",
+    "@joowani/tree-sitter-mcp-win32-x64": "0.0.0"
+  }
+}
